@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ElectroMart CCC</title>
+  <meta name="description" content="Cash conversion cycle calculator for the ElectroMart working capital case (FIN 4150).">
+  <meta name="theme-color" content="#0b5cad">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ElectroMart CCC">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>ElectroMart CCC</h1>
+    <p class="sub">How long a dollar is tied up in operations, before and after the working capital changes.</p>
+  </header>
+
+  <main>
+    <p id="status" class="status" role="status">Loading data…</p>
+
+    <section aria-labelledby="days-h">
+      <h2 id="days-h">Cash conversion cycle</h2>
+      <div class="table-wrap">
+        <table id="days-table">
+          <thead>
+            <tr><th scope="col">Days</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">Change</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="note" id="days-note"></p>
+    </section>
+
+    <section aria-labelledby="cash-h">
+      <h2 id="cash-h">Cash freed by each lever</h2>
+      <div class="table-wrap">
+        <table id="cash-table">
+          <thead>
+            <tr><th scope="col">Lever</th><th scope="col">From balance sheet</th><th scope="col">Check: days × annual / year</th></tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <p class="note">A drop in an asset frees cash. A rise in accounts payable frees cash. The check column recomputes each lever as days changed × annual COGS (or revenue for receivables) ÷ days in the year, using Before revenue and COGS.</p>
+    </section>
+    <section aria-labelledby="levers-h">
+      <h2 id="levers-h">Levers</h2>
+      <p class="note top">Move any slider. Revenue and COGS stay at their Before values, and every result below compares with Before.</p>
+      <div class="buttons">
+        <button type="button" id="set-before">Set to Before</button>
+        <button type="button" id="set-after">Set to After</button>
+      </div>
+      <div class="slider">
+        <label for="dio-slider">DIO <span class="term">Days inventory outstanding</span></label>
+        <output id="dio-val" for="dio-slider"></output>
+        <input type="range" id="dio-slider" min="0" max="100" step="any">
+      </div>
+      <div class="slider">
+        <label for="dso-slider">DSO <span class="term">Days sales outstanding</span></label>
+        <output id="dso-val" for="dso-slider"></output>
+        <input type="range" id="dso-slider" min="0" max="100" step="any">
+      </div>
+      <div class="slider">
+        <label for="dpo-slider">DPO <span class="term">Days payables outstanding</span></label>
+        <output id="dpo-val" for="dpo-slider"></output>
+        <input type="range" id="dpo-slider" min="0" max="100" step="any">
+      </div>
+    </section>
+
+    <section aria-labelledby="results-h" aria-live="polite">
+      <h2 id="results-h">Lever results</h2>
+      <div class="big">
+        <span class="big-label">Cash conversion cycle</span>
+        <span class="big-num" id="lever-ccc"></span>
+        <span class="term" id="lever-ccc-change"></span>
+      </div>
+      <div class="table-wrap">
+        <table id="lever-table">
+          <thead>
+            <tr><th scope="col">Balance</th><th scope="col">Before</th><th scope="col">Implied</th><th scope="col">Cash freed</th></tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <dl class="facts">
+        <div>
+          <dt>Interest saved each year<span class="term" id="interest-note"></span></dt>
+          <dd id="interest"></dd>
+        </div>
+        <div>
+          <dt>Days paid past the due date<span class="term" id="past-due-note"></span></dt>
+          <dd id="past-due"></dd>
+        </div>
+        <div>
+          <dt>Annual cost of skipping the discount<span class="term" id="discount-note"></span></dt>
+          <dd id="discount"></dd>
+        </div>
+      </dl>
+    </section>
+  </main>
+
+  <footer>
+    <p>All figures are read from <code>data/electromart.csv</code> and <code>data/assumptions.csv</code>. Everything runs in your browser.</p>
+  </footer>
+
+  <script src="ccc.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
