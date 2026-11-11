@@ -68,12 +68,104 @@
     foot.appendChild(row(['Total cash freed', dollars(cf.total.fromBalances), dollars(cf.total.fromDays)]));
   }
 
+  // ---- Levers -------------------------------------------------------------
+
+  const fmtPct = new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const KEYS = ['dio', 'dso', 'dpo'];
+  let model = null;      // result of CCC.analyze
+  let leverDays = null;  // exact lever values; sliders only display them
+
+  function signedDollars(x) {
+    const r = Math.round(x) || 0;
+    return '<span class="' + (r < 0 ? 'neg' : '') + '">' + dollars(r) + '</span>';
+  }
+
+  // Slider range: 0 to about twice the larger of Before and After, in whole tens.
+  function setupSliders() {
+    KEYS.forEach(function (k) {
+      const slider = document.getElementById(k + '-slider');
+      let top = Math.max(model.before[k], model.after[k]);
+      if (k === 'dpo') top = Math.max(top, model.assumptions.net_days || 0);
+      slider.max = String(Math.max(10, Math.ceil(top * 2 / 10) * 10));
+      slider.addEventListener('input', function () {
+        leverDays[k] = Number(slider.value);
+        renderLevers(false);
+      });
+    });
+    document.getElementById('set-before').addEventListener('click', function () { setLevers(model.before); });
+    document.getElementById('set-after').addEventListener('click', function () { setLevers(model.after); });
+  }
+
+  function setLevers(period) {
+    leverDays = { dio: period.dio, dso: period.dso, dpo: period.dpo };
+    renderLevers(true);
+  }
+
+  function renderLevers(moveSliders) {
+    const as = model.assumptions;
+    const before = model.statements.before;
+    const s = CCC.scenario(leverDays, before, as);
+
+    KEYS.forEach(function (k) {
+      const slider = document.getElementById(k + '-slider');
+      if (moveSliders) {
+        if (leverDays[k] > Number(slider.max)) slider.max = String(Math.ceil(leverDays[k] / 10) * 10);
+        slider.value = String(leverDays[k]);
+      }
+      document.getElementById(k + '-val').textContent = days(leverDays[k]) + ' days';
+    });
+
+    document.getElementById('lever-ccc').textContent = days(s.ccc) + ' days';
+    document.getElementById('lever-ccc-change').textContent =
+      signedDays(s.ccc - model.before.ccc) + ' days vs Before (' + days(model.before.ccc) + ')';
+
+    const body = document.querySelector('#lever-table tbody');
+    body.innerHTML = '';
+    [
+      ['Inventory', 'inventory', 'inventory'],
+      ['Receivables', 'accounts_receivable', 'receivables'],
+      ['Payables', 'accounts_payable', 'payables']
+    ].forEach(function (r) {
+      body.appendChild(row([r[0], dollars(before[r[1]]), dollars(s.balances[r[1]]), signedDollars(s.cashFreed[r[2]])]));
+    });
+    const foot = document.querySelector('#lever-table tfoot');
+    foot.innerHTML = '';
+    foot.appendChild(row(['Total cash freed', '', '', signedDollars(s.cashFreed.total)]));
+
+    document.getElementById('interest').innerHTML = signedDollars(s.interestSaved);
+    document.getElementById('interest-note').textContent =
+      'Assumes every freed dollar pays down the bank line (Before ' + dollars(before.notes_payable || 0) +
+      ') at ' + fmtPct.format(as.bank_rate) + '. ' +
+      (s.interestCapped ? 'Capped: cash freed is more than the bank line. ' : '') +
+      (s.cashFreed.total < 0 ? 'Negative: ElectroMart must borrow more. ' : '') +
+      'The case’s After balance sheet shows part of the cash was kept, not used to repay the bank.';
+
+    document.getElementById('past-due').textContent = days(s.daysPastDue) + ' days';
+    document.getElementById('past-due-note').textContent =
+      'DPO − ' + as.net_days + ' net days, never below zero';
+
+    const pctDisc = fmtPct.format(as.supplier_discount);
+    if (s.discountCost === null) {
+      document.getElementById('discount').textContent = 'Takes discount';
+      document.getElementById('discount-note').textContent =
+        'DPO is within the ' + as.discount_days + '-day discount period, so ElectroMart takes the ' + pctDisc + ' discount';
+    } else {
+      document.getElementById('discount').textContent = fmtPct.format(s.discountCost);
+      document.getElementById('discount-note').textContent =
+        'Nominal annual rate: ' + pctDisc + ' / (1 − ' + pctDisc + ') × ' + as.days_in_year +
+        ' / (DPO − ' + as.discount_days + ')';
+    }
+  }
+
   function start() {
     const status = document.getElementById('status');
     Promise.all([loadText('data/electromart.csv'), loadText('data/assumptions.csv')])
       .then(function (texts) {
         const result = CCC.analyze(CCC.parseCSV(texts[0]), CCC.parseCSV(texts[1]));
         render(result);
+        model = result;
+        setupSliders();
+        setLevers(model.before);
         status.textContent = '';
       })
       .catch(function (err) {
