@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ElectroMart CCC</title>
+  <meta name="description" content="Cash conversion cycle calculator for the ElectroMart working capital case (FIN 4150).">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>ElectroMart CCC</h1>
+    <p class="sub">How long a dollar is tied up in operations, before and after the working capital changes.</p>
+  </header>
+
+  <main>
+    <p id="status" class="status" role="status">Loading data…</p>
+
+    <section aria-labelledby="days-h">
+      <h2 id="days-h">Cash conversion cycle</h2>
+      <div class="table-wrap">
+        <table id="days-table">
+          <thead>
+            <tr><th scope="col">Days</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">Change</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="note" id="days-note"></p>
+    </section>
+
+    <section aria-labelledby="cash-h">
+      <h2 id="cash-h">Cash freed by each lever</h2>
+      <div class="table-wrap">
+        <table id="cash-table">
+          <thead>
+            <tr><th scope="col">Lever</th><th scope="col">From balance sheet</th><th scope="col">Check: days × annual / year</th></tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot></tfoot>
+        </table>
+      </div>
+      <p class="note">A drop in an asset frees cash. A rise in accounts payable frees cash. The check column recomputes each lever as days changed × annual COGS (or revenue for receivables) ÷ days in the year, using Before revenue and COGS.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>All figures are read from <code>data/electromart.csv</code> and <code>data/assumptions.csv</code>. Everything runs in your browser.</p>
+  </footer>
+
+  <script src="ccc.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
