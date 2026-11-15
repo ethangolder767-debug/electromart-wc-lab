@@ -37,6 +37,7 @@ Collect every item below before you build. **If an input is missing, ask. Never 
   6. Statement of cash flows, ending with the cash-delta check
 - **Every formula references the Assumptions tab. Nothing is hard-coded.** A typed number in a formula, such as `*0.22`, `4*2000`, `-13500` or a typed sales figure, is an input that is hiding. Move it to the Assumptions tab and reference it. Use absolute references, such as `Assumptions!$B$10`, so a formula can be copied across periods.
 - An annual column for a year that also has quarterly columns sums the quarters for flow lines (income statement and cash flow). For balance lines it equals the last quarter.
+- Add a timeline block at the top of tab 2 with three rows: the start period index, the number of quarters in the column (1 or 4) and the end index. Then one formula can serve both quarterly and annual columns, for example a fixed cost per quarter × the quarters in the column, or a dated event such as an in-service date or a payment start.
 
 ## 3. How to forecast each line
 
@@ -55,7 +56,7 @@ Collect every item below before you build. **If an input is missing, ask. Never 
 - **Payables** = the unpaid share × this period's purchases.
 - **Net plant** = prior net plant + capex in service this period − depreciation.
 - **Retained earnings** = prior retained earnings + addition to retained earnings. Lines held constant equal the prior period.
-- **Term loans: split current and long-term from one total.** The total balance = prior total + new borrowing − principal paid. The current portion = MIN(the next 12 months of scheduled principal, the total). Long-term = total − current. Never let either portion go negative. If a new loan starts mid-year, count only the payments that fall in the next 12 months.
+- **Term loans: split current and long-term from one total.** The total balance = prior total + new borrowing − principal paid. The current portion = MIN(the next 12 months of scheduled principal, the total). Long-term = total − current. Never let either portion go negative. If a new loan starts mid-year, count only the payments that fall in the next 12 months. A loan that hasn't been drawn by the balance sheet date has no current portion, even if its payments start within 12 months.
 
 ## 4. The bank loan plug
 
