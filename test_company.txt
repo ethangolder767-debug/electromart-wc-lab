@@ -1,0 +1,67 @@
+REDCLIFF VALVE CO. (invented test company, not a real firm)
+Test case for the pro-forma-forecast skill. Annual forecast only: 20y1 through 20y5, no quarters.
+
+OPENING BALANCE SHEET, 12/31/20y0
+  Cash (minimum $100,000)            $100,000
+  Accounts receivable              $1,000,000   (50% of 20y0 sales of $2,000,000)
+  Inventory                          $660,000   (30% of 20y1 sales)
+  Treasury securities                 $50,000
+    Total current assets           $1,810,000
+  Net plant & equipment              $400,000
+  Other assets                        $50,000
+    TOTAL ASSETS                   $2,260,000
+
+  Accounts payable                   $165,000   (25% of 20y0 purchases of $660,000)
+  Taxes payable                       $30,000   (20% of 20y0 tax of $150,000)
+  Accruals                            $20,000
+  Bank line                                $0
+  Term loan, current portion          $40,000
+    Total current liabilities        $255,000
+  Term loan, long-term portion       $160,000
+    Total liabilities                $415,000
+  Common stock                       $300,000
+  Retained earnings                $1,545,000
+    TOTAL LIABILITIES + EQUITY     $2,260,000
+
+SALES
+  20y1 sales $2,200,000. Growth 6% per year for 20y2 through 20y6.
+  (20y6 sales are needed only to set the 20y5 year-end inventory.)
+  No seasonality matters: the model is annual.
+
+COLLECTIONS
+  50% of each year's sales collected that year, 50% the next year. No bad debts, no cash sales.
+
+PURCHASES AND COST OF SALES
+  Materials are 30% of sales.
+  Inventory is bought one year ahead: each year-end inventory = 30% of next year's sales.
+  75% of each year's purchases are paid that year, 25% the next year.
+  Direct labor is 32% of sales, paid as incurred.
+
+OPERATING EXPENSES (paid as incurred)
+  SG&A $250,000 in 20y1, rising $10,000 per year.
+  Rent $60,000 per year, fixed.
+
+CAPITAL SPENDING (paid in cash; no equipment loan)
+  Existing plant: depreciation $40,000 per year through 20y3, then fully depreciated.
+  New capex, in service January 1 of each year, full-year depreciation:
+    20y1 $100,000   20y2 $100,000   20y3 $550,000 (expansion)   20y4 $100,000   20y5 $100,000
+  New capex: 5-year life, straight line, zero salvage.
+
+FINANCING
+  Bank line: 8% per year, charged on the opening (prior year-end) balance. Line limit $100,000.
+  Term loan: $200,000 balance, $40,000 principal per year, 7% on the opening balance.
+  Minimum cash $100,000. Excess cash repays the bank line first, then buys Treasury securities.
+  Treasury securities earn 4% per year on the opening balance.
+  No new equity. Common stock, other assets and accruals stay at 12/31/20y0 levels.
+
+TAXES AND DIVIDENDS
+  Tax rate 25%. 80% of each year's tax is paid that year, 20% the next year (taxes payable = 20% of the year's tax).
+  A loss year would get a negative tax (credit); none is expected.
+  Dividends: 30% of net income (none in a loss year).
+
+COVENANTS (tested at each year-end)
+  Current ratio at least 2.00.
+  Interest-bearing debt (bank line + term loan) / equity at most 0.50. Payables, accruals and taxes are NOT debt.
+  Interest coverage (EBIT / interest expense) at least 5.0.
+  Bank line balance at most $100,000.
+  No clean-up clause.
